@@ -22,7 +22,7 @@ jobs:
       - name: Repository Dispatch
         uses: peter-evans/repository-dispatch@v2
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.PAT_GITHUB }}
           repository: akita-cicd/cicd-template
           event-type: github-workflow-test
           client-payload: '{"workflowInputs": {"text": "banana"}, "token": "${{ env.TOKEN }}"}'
