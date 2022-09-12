@@ -18,11 +18,14 @@ jobs:
         run: |
           export OIDC=$(curl -sLS "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=akita" -H "User-Agent: actions/oidc-client" -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" | jq -r '.value')
           echo "TOKEN=$OIDC" >> $GITHUB_ENV
-
-      - name: Repository Dispatch
-        uses: peter-evans/repository-dispatch@v2
+          
+      - name: Trigger Workflow
+        uses: actions/github-script@v6
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          repository: akita-cicd/cicd-template
-          event-type: github-workflow-test
-          client-payload: '{"workflowInputs": {"text": "banana"}, "token": "${{ env.TOKEN }}"}'
+          script: |
+            github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: 'cicd-template',
+              workflow_id: 'github-workflow-test.yaml',
+              ref: 'main',
+            })
